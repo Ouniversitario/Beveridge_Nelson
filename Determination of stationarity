@@ -1,0 +1,39 @@
+Author:Maicon Ribeiro
+
+Year:2017
+
+#Determination of stationarity
+
+
+
+D<-function(x,gama){
+  
+  #Where "x" is the time series, "gama" is the degree of meaning.
+  print("Phillip-Perron")
+  
+  pp1<-pp.test(x)
+  pp2<-pp.test(diff(x))
+  pp3<-pp.test(diff(diff(x)))
+  pp4<-pp.test(diff(diff(diff(x))))
+ 
+  if(pp1$p.value>gama){
+    
+    if(pp2$p.value>gama){
+      
+      if(pp3$p.value>gama){
+        
+        if(pp4$p.value>gama){
+          
+          print("More than 3")
+          
+        }else{print("I(3)")}
+        
+      }else{print("I(2)")}
+      
+    }else{print("I(1)")}
+    
+  }else{print("I(0)")}
+  
+  
+}
+
