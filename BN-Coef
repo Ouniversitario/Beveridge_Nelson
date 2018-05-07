@@ -1,58 +1,55 @@
-Author:Maicon Riebiro
-Year:2018
-Software:R
-
 ##I prefer to use the "function" command for this
 
 
-BN<-function(MODEL){
-
-#I'm using phi and theta as vector for AR(p) e MA(q) part.
+BN<-function(model){
+  
+  #I'm using phi and theta as vector for AR(p) e MA(q) part.
   phi<-vector()
   theta<-vector()
- 
-#
-  m<-summary(MODEL)
+  
+  #
+  m<-summary(model)
   mp<-m$p
   mq<-m$q
   
   
-#If the model is a MA(q)
-  if(mp==0){
-    if(mq!=0){
+  #If the model is a MA(q)
+  if(mp==0 & mq!=0){
+    
       qbn<-q
-    } else{qbn<-NA}
+    
   } 
   
-# If the model is an AR(p)
-  if(mp!=0){
-    if(mq==0){
-      pbn<-p
-    }else{pbn<-NA}
-  }
+  # If the model is an AR(p)
+  if(mp!=0 & mq==0){
   
-# If the model is an ARMA(p,q)
-
-    #For the MA(q) part
-  if(mp!=0){
-    if(mq!=0){
-      qbn<-q
-    }else{qbn<-NA}
-  }
-  
-    #For the AR(p) part
-  if(mp!=0){
-    if(mq!=0){
       pbn<-p
+      
     }
-  }
+  
+  
+  # If the model is an ARMA(p,q)
+  
+  #For the MA(q) part
+  if(mp!=0 & mq!=0){
+    
+      qbn<-q
+    
+  } 
+  
+  #For the AR(p) part
+  if(mp!=0 & mq!=0){
+   
+      pbn<-p
+    } 
+  
   
   #If someone does not exist mark as "NA"
   
   if(mp==0){ pbn<-NA}
   if(mq==0){ qbn<-NA}
   
- #Here I extract the BN's coefficients
+  #Here I extract the BN's coefficients
   
   m1<-m$coef
   m1<-as.data.frame(m1)
@@ -64,29 +61,38 @@ BN<-function(MODEL){
     for(i in 1:length(pbn)){
       phi[i]<-(m1[i])}
   } else {phi[i]<-0}
- 
- #For the MA(q) part
+  
+  #For the MA(q) part
   if(is.na(qbn)==FALSE){
-    for(i in (length(na.omit(pbn))+1):(length(na.omit(pbn))+length(na.omit(qbn)))){
-      theta[i]<-m1[i]}
+    
+    if(is.na(pbn)==TRUE)
+         for(i in 1:(length(na.omit(qbn)))){
+      theta[i]<-m1[i]} else {for(i in (length(pbn)+1):(length(pbn)+length(na.omit(qbn)))){
+        theta[i]<-m1[i]}}
+    
+    
   } else {theta[i]<-0}
   #The command above is importante.
   
   
-#Taking the the coeficientes e using the "sum" function.
+  #Taking the the coeficientes e using the "sum" function.
   phi<-na.omit(phi)
   theta<-na.omit(theta)
-
-#The Sum 
+  
+  #The Sum 
   up<-sum(theta)
   down<-sum(phi)
- 
- #Impact Coefficient
- 
- BNcoef<-(1+up)/(1-down)
   
-                #It is necessary that "up" and "down" be, in module, smaller than 1 so that there is invertibility.
-                
-                if(abs(up)<1 & abs(down)<1){print(BNcoef)} else {print("Fail")}
- 
+  #Impact Coefficient
+  #Using the Tsay(2010) way to write an arma(p,q): yt=phi1(yt-1)-theta1(et-1)+et
+  
+  BNcoef<-(1-up)/(1-down)
+  
+  #It is necessary that "up" and "down" be, in module, smaller than 1 so that there is invertibility.
+  
+  if(abs(up)<1 & abs(down)<1){print(BNcoef)} else {print("Fail")}
+  
 }
+
+
+BN(model)
