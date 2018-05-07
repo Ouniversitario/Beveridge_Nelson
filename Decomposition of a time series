@@ -1,0 +1,26 @@
+Author:Maicon Ribeiro
+
+Year:2016
+
+
+DE<-function(z){
+ 
+  
+  y<-vector()
+  x<-vector()
+  
+  
+  for(i in 2:length(z)){
+    x[i]<-log((z[i])/(z[i-1]))
+  }
+  
+  for(i in 2:length(z)){
+    y[i]<-(x[i]-mean(na.omit(x)))^2
+  }
+  
+  par(mfrow= c(1,3))
+  plot.ts(cbind(z,x,y))
+  
+}
+
+DE(z)
