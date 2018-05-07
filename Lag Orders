@@ -1,0 +1,48 @@
+Author:Maicon Ribeiro
+Year:2018
+#A function to determinate the significant lags of a time series
+
+L<-function(x,h){
+  #Where x is the time series and the h is the maximum lag
+  #Some vector to use
+  #MA part
+  q<-vector()
+  
+  #AR part
+  p<-vector()
+  
+  
+  #C.I. interval
+  ic<-(2/(sqrt(length(x)))) 
+ 
+  
+  
+  #ACF
+  FAC<-acf(x,h)
+  FAC<-ts(FAC$acf)
+  
+  for(i in 1:h){
+    if(abs(FAC[i])>ic){
+      q[i]<-(i-1)
+    }
+  }
+  q<-ts(na.omit(q))
+  
+  
+  #PACF
+  
+  FACP<-pacf(x, h)
+  FACP<-ts(FACP$acf)
+  
+  for(i in 1:h){
+    if(abs(FACP[i])>ic){
+      p[i]<-i
+    }
+  }
+  p<-ts(na.omit(p))
+  
+ print(p)
+ print(q)
+  
+  
+}
