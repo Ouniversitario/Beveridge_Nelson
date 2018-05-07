@@ -1,0 +1,21 @@
+Author:Maicon Ribeiro
+Year:2018
+#Function to find the correlogram of a time serie
+
+
+C<-function(j){
+  
+  x<-na.omit(j)
+  
+  par(mfrow=c(4,1))
+ 
+ 
+ #The p and q  lag lenght is determinate by Enders(2009)
+ 
+ acf(x, trunc(length(x)/4))
+  pacf(x, trunc(length(x)/4))
+  
+  acf(diff(x), trunc(length(x)/4))
+  pacf(diff(x), trunc(length(x)/4))
+  
+}
