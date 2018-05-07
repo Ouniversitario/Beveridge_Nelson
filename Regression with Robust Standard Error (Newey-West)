@@ -1,0 +1,25 @@
+Author:Maicon Ribeiro
+Year:2018
+
+#CAPM with robust standard error
+
+#Packages
+install.packages("sandwich")
+
+library(sandwich)
+
+CAPM <- lm((y2) ~ (x2))
+
+mcapm<-coeftest(CAPM, df = Inf, vcov = NeweyWest(CAPM, lag = NULL, prewhite = FALSE))#Esse comando
+
+#usa o erro padrão robusto de NeweyWest, NULL= significa que o programa escolhe o mais adequado (vide: Econometric Computing with HC and HAC
+#Covariance Matrix Estimators,Achim Zeileis Universit¨at Innsbruck)
+
+
+if(mcapm[1,4]>gama){
+  CAPM <- lm((y2) ~ (x2)-1)
+} else {CAPM <- lm((y2) ~ (x2))}
+
+
+
+mcapm1<-coeftest(CAPM, df = Inf, vcov = NeweyWest(CAPM, lag = NULL, prewhite = FALSE))
